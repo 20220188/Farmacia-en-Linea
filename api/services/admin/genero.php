@@ -1,13 +1,13 @@
 <?php
 // Se incluye la clase del modelo.
-require_once('../../models/data/admin_usuarios_data.php');
+require_once('../../models/data/genero_data.php');
 
 // Se comprueba si existe una acción a realizar, de lo contrario se finaliza el script con un mensaje de error.
 if (isset($_GET['action'])) {
     // Se crea una sesión o se reanuda la actual para poder utilizar variables de sesión en el script.
     session_start();
     // Se instancia la clase correspondiente.
-    $usuario = new UsuarioData;
+    $genero = new GeneroData;
     // Se declara e inicializa un arreglo para guardar el resultado que retorna la API.
     $result = array('status' => 0, 'message' => null, 'dataset' => null, 'error' => null, 'exception' => null);
     // Se verifica si existe una sesión iniciada como administrador, de lo contrario se finaliza el script con un mensaje de error.
@@ -17,7 +17,7 @@ if (isset($_GET['action'])) {
             case 'searchRows':
                 if (!Validator::validateSearch($_POST['search'])) {
                     $result['error'] = Validator::getSearchError();
-                } elseif ($result['dataset'] = $usuario->searchRows($_POST['search'])) {
+                } elseif ($result['dataset'] = $genero->searchRows()) {
                     $result['status'] = 1;
                     $result['message'] = 'Existen ' . count($result['dataset']) . ' coincidencias';
                 } else {
@@ -26,75 +26,56 @@ if (isset($_GET['action'])) {
                 break;
             case 'createRow':
                 $_POST = Validator::validateForm($_POST);
-                if (
-                    !$usuario->setUsuario($_POST['Usuario']) or
-                    !$usuario->setClave($_POST['Clave']) or
-                    !$usuario->setCorreo($_POST['correoUsuario']) or
-                    !$usuario->setNombre($_POST['nombreUsuario']) or
-                    !$usuario->setDUI($_POST['DUIUsuario']) or
-                    !$usuario->setTelefono($_POST['telefonoUsuario']) or
-                    !$usuario->setIdNivelUsuario($_POST['idNivelUsuario'])
-                ) {
-                    $result['error'] = $usuario->getDataError();
-                } elseif ($_POST['Clave'] != $_POST['confirmarClave']) {
-                    $result['error'] = 'Contraseñas diferentes';
-                } elseif ($usuario->createRow()) {
+                if (!$genero->setGenero($_POST['nombreGenero'])) {
+                    $result['error'] = $genero->getDataError();
+                } elseif ($genero->createRow()) {
                     $result['status'] = 1;
-                    $result['message'] = 'Usuario creado correctamente';
+                    $result['message'] = 'Genero creada correctamente';
                 } else {
-                    $result['exception'] = Database::getException();
+                    $result['error'] = 'Ocurrió un problema al crear el genero';
                 }
                 break;
             case 'readAll':
-                if ($result['dataset'] = $usuario->readAll()) {
+                if ($result['dataset'] = $genero->readAll()) {
                     $result['status'] = 1;
                     $result['message'] = 'Existen ' . count($result['dataset']) . ' registros';
                 } else {
-                    $result['error'] = 'No existen usuarios registrados';
+                    $result['error'] = 'No existen generos registradas';
                 }
                 break;
             case 'readOne':
-                if (!$usuario->setIdUsuario($_POST['idUsuario'])) {
-                    $result['error'] = $usuario->getDataError();
-                } elseif ($result['dataset'] = $usuario->readOne()) {
+                if (!$genero->setId($_POST['idGenero'])) {
+                    $result['error'] = $genero->getDataError();
+                } elseif ($result['dataset'] = $genero->readOne()) {
                     $result['status'] = 1;
                 } else {
-                    $result['error'] = 'Usuario inexistente';
+                    $result['error'] = 'Genero inexistente';
                 }
                 break;
             case 'updateRow':
                 $_POST = Validator::validateForm($_POST);
                 if (
-                    !$usuario->setIdUsuario($_POST['idUsuario']) or
-                    !$usuario->setNombre($_POST['nombreUsuario']) or
-                    !$usuario->setTelefono($_POST['telefonoUsuario']) or
-                    !$usuario->setCorreo($_POST['correoUsuario']) or
-                    !$usuario->setUsuario($_POST['Usuario'])                                         
+                    !$genero->setId($_POST['idGenero']) or
+                    !$genero->setGenero($_POST['nombreGenero'])
                 ) {
-                    $result['error'] = $usuario->getDataError();
-                } elseif ($usuario->updateRow()) {
+                    $result['error'] = $genero->getDataError();
+                } elseif ($genero->updateRow()) {
                     $result['status'] = 1;
-                    $result['message'] = 'Usuario modificado correctamente';
+                    $result['message'] = 'Genero modificado correctamente';
                 } else {
-                    $result['error'] = 'Ocurrió un problema al modificar el usuario';
+                    $result['error'] = 'Ocurrió un problema al modificar el genero';
                 }
                 break;
             case 'deleteRow':
-                if (!$usuario->setIdUsuario($_POST['idUsuario'])) {
-                    $result['error'] = $usuario->getDataError();
-                } elseif ($usuario->deleteRow()) {
+                if (
+                    !$genero->setId($_POST['idGenero'])
+                ) {
+                    $result['error'] = $genero->getDataError();
+                } elseif ($genero->deleteRow()) {
                     $result['status'] = 1;
-                    $result['message'] = 'Usuario eliminado correctamente';
+                    $result['message'] = 'Genero eliminado correctamente';
                 } else {
-                    $result['error'] = 'Ocurrió un problema al eliminar el usuario';
-                }
-                break;
-            case 'readAllNiveles':
-                if ($result['dataset'] = $usuario->readAllNiveles()) {
-                    $result['status'] = 1;
-                    $result['message'] = 'Existen ' . count($result['dataset']) . ' registros';
-                } else {
-                    $result['error'] = 'No existen usuarios registrados';
+                    $result['error'] = 'Ocurrió un problema al eliminar el genero';
                 }
                 break;
             default:

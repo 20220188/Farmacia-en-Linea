@@ -1,23 +1,23 @@
 <?php
 // Se incluye la clase del modelo.
-require_once('../../models/data/categoria_data.php');
+require_once('../../models/data/tipo_producto_data.php');
 
 // Se comprueba si existe una acción a realizar, de lo contrario se finaliza el script con un mensaje de error.
 if (isset($_GET['action'])) {
     // Se instancia la clase correspondiente.
-    $categoria = new CategoriaData;
+    $tipoProducto = new TipoProductoData;
     // Se declara e inicializa un arreglo para guardar el resultado que retorna la API.
     $result = array('status' => 0, 'message' => null, 'dataset' => null, 'error' => null, 'exception' => null);
     // Se compara la acción a realizar según la petición del controlador.
     switch ($_GET['action']) {
-        case 'readAll':
-            if ($result['dataset'] = $categoria->readAll()) {
+        case 'readAll_TipoP':
+            if ($result['dataset'] = $tipoProducto->readAll()) {
                 $result['status'] = 1;
+                $result['message'] = 'Existen ' . count($result['dataset']) . ' registros';
             } else {
-                $result['error'] = 'No existen categorías para mostrar';
+                $result['error'] = 'No existen tipos de productos registradas';
             }
             break;
-            
         default:
             $result['error'] = 'Acción no disponible';
     }

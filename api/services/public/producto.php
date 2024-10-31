@@ -10,10 +10,25 @@ if (isset($_GET['action'])) {
     $result = array('status' => 0, 'message' => null, 'dataset' => null, 'error' => null, 'exception' => null);
     // Se compara la acción a realizar según la petición del controlador.
     switch ($_GET['action']) {
-        case 'readProductosCategoria':
-            if (!$producto->setCategoria($_POST['idCategoria'])) {
+        case 'searchRowsPublic':
+            if (!Validator::validateSearch($_POST['search'])) {
+                $result['error'] = Validator::getSearchError();
+            } elseif ($result['dataset'] = $producto->searchRowsPublic()) {
+                $result['status'] = 1;
+                $result['message'] = 'Existen ' . count($result['dataset']) . ' coincidencias';
+            } else {
+                $result['error'] = 'No hay coincidencias';
+            }
+            break;
+        case 'readProductoxCategoria':
+            if (
+                !$producto->setDeporte($_POST['idDeporte']) or
+                !$producto->setCategoria(isset($_POST['idCategoria']) ? $_POST['idCategoria'] : null) or
+                !$producto->setTipoProducto(isset($_POST['idTipoProducto']) ? $_POST['idTipoProducto'] : null) or
+                !$producto->setGenero(isset($_POST['idGenero']) ? $_POST['idGenero'] : null)
+            ) {
                 $result['error'] = $producto->getDataError();
-            } elseif ($result['dataset'] = $producto->readProductosCategoria()) {
+            } elseif ($result['dataset'] = $producto->readProductoxCategoria()) {
                 $result['status'] = 1;
             } else {
                 $result['error'] = 'No existen productos para mostrar';
@@ -26,6 +41,39 @@ if (isset($_GET['action'])) {
                 $result['status'] = 1;
             } else {
                 $result['error'] = 'Producto inexistente';
+            }
+            break;
+        case 'readOnePublica':
+            if (!$producto->setId($_POST['idProducto'])) {
+                $result['error'] = $producto->getDataError();
+            } elseif ($result['dataset'] = $producto->readOnePublica()) {
+                $result['status'] = 1;
+            } else {
+                $result['error'] = 'Producto inexistente';
+            }
+            break;
+        case 'readProductos':
+            if (
+                !$producto->setDeporte(isset($_POST['idDeporte']) ? $_POST['idDeporte'] : null) or
+                !$producto->setCategoria(isset($_POST['idCategoria']) ? $_POST['idCategoria'] : null) or
+                !$producto->setTipoProducto(isset($_POST['idTipoProducto']) ? $_POST['idTipoProducto'] : null) or
+                !$producto->setGenero(isset($_POST['idGenero']) ? $_POST['idGenero'] : null)
+            ) {
+                $result['error'] = $producto->getDataError();
+            } elseif ($result['dataset'] = $producto->readProductos()) {
+                $result['status'] = 1;
+            } else {
+                $result['error'] = 'No existen productos para mostrar';
+            }
+            break;
+        case 'readAllMovil':
+            $id_categoria = isset($_GET['id_categoria']) ? $_GET['id_categoria'] : null;
+            $id_deporte = isset($_GET['id_deporte']) ? $_GET['id_deporte'] : null;
+
+            if ($result['dataset'] = $producto->readAllMovil($id_categoria, $id_deporte)) {
+                $result['status'] = 1;
+            } else {
+                $result['error'] = 'No existen productos para mostrar';
             }
             break;
         default:

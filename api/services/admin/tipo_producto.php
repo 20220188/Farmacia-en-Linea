@@ -1,13 +1,13 @@
 <?php
 // Se incluye la clase del modelo.
-require_once('../../models/data/admin_maestros_punto_de_venta_data.php');
+require_once('../../models/data/tipo_producto_data.php');
 
 // Se comprueba si existe una acción a realizar, de lo contrario se finaliza el script con un mensaje de error.
 if (isset($_GET['action'])) {
     // Se crea una sesión o se reanuda la actual para poder utilizar variables de sesión en el script.
     session_start();
     // Se instancia la clase correspondiente.
-    $Puntoventa = new PuntoDeVentaData;
+    $tipoProducto = new TipoProductoData;
     // Se declara e inicializa un arreglo para guardar el resultado que retorna la API.
     $result = array('status' => 0, 'message' => null, 'dataset' => null, 'error' => null, 'exception' => null);
     // Se verifica si existe una sesión iniciada como administrador, de lo contrario se finaliza el script con un mensaje de error.
@@ -17,7 +17,7 @@ if (isset($_GET['action'])) {
             case 'searchRows':
                 if (!Validator::validateSearch($_POST['search'])) {
                     $result['error'] = Validator::getSearchError();
-                } elseif ($result['dataset'] = $Puntoventa->searchRows()) {
+                } elseif ($result['dataset'] = $tipoProducto->searchRows()) {
                     $result['status'] = 1;
                     $result['message'] = 'Existen ' . count($result['dataset']) . ' coincidencias';
                 } else {
@@ -26,70 +26,58 @@ if (isset($_GET['action'])) {
                 break;
             case 'createRow':
                 $_POST = Validator::validateForm($_POST);
-                if (
-                    !$Puntoventa->setnombrePuntoVenta($_POST['nombrePuntoVenta']) or
-                    !$Puntoventa->setClave($_POST['clavePuntoVenta'])
-                ) {
-                    $result['error'] = $Puntoventa->getDataError();
-                }  elseif ($Puntoventa->createRow()) {
+                if (!$tipoProducto->setNombre($_POST['nombreTipoProducto'])) {
+                    $result['error'] = $tipoProducto->getDataError();
+                } elseif ($tipoProducto->createRow()) {
                     $result['status'] = 1;
-                    $result['message'] = 'Punto de venta creado correctamente';
+                    $result['message'] = 'Tipo de producto creada correctamente';
                 } else {
-                    $result['exception'] = Database::getException();
+                    $result['error'] = 'Ocurrió un problema al crear el tipo de producto';
                 }
                 break;
-            case 'readAll':
-                if ($result['dataset'] = $Puntoventa->readAll()) {
+            case 'readAll_TipoP':
+                if ($result['dataset'] = $tipoProducto->readAll()) {
                     $result['status'] = 1;
                     $result['message'] = 'Existen ' . count($result['dataset']) . ' registros';
                 } else {
-                    $result['error'] = 'No existen Punto de ventas registrados';
+                    $result['error'] = 'No existen tipos de productos registradas';
                 }
                 break;
             case 'readOne':
-                if (!$Puntoventa->setidPuntoVenta($_POST['idPuntoVenta'])) {
-                    $result['error'] = $Puntoventa->getDataError();
-                } elseif ($result['dataset'] = $Puntoventa->readOne()) {
+                if (!$tipoProducto->setId($_POST['idTipoProducto'])) {
+                    $result['error'] = $tipoProducto->getDataError();
+                } elseif ($result['dataset'] = $tipoProducto->readOne()) {
                     $result['status'] = 1;
                 } else {
-                    $result['error'] = 'Punto de venta inexistente';
+                    $result['error'] = 'Tipo de producto inexistente';
                 }
                 break;
             case 'updateRow':
                 $_POST = Validator::validateForm($_POST);
                 if (
-                    !$Puntoventa->setidPuntoVenta($_POST['idPuntoVenta']) ||
-                    !$Puntoventa->setnombrePuntoVenta($_POST['nombrePuntoVenta']) ||
-                    !$Puntoventa->setClave($_POST['clavePuntoVenta'])
+                    !$tipoProducto->setId($_POST['idTipoProducto']) or
+                    !$tipoProducto->setNombre($_POST['nombreTipoProducto'])
                 ) {
-                    $result['error'] = $Puntoventa->getDataError();
-                } elseif ($Puntoventa->updateRow()) {
+                    $result['error'] = $tipoProducto->getDataError();
+                } elseif ($tipoProducto->updateRow()) {
                     $result['status'] = 1;
-                    $result['message'] = 'Punto de venta modificado correctamente';
+                    $result['message'] = 'Tipo de producto modificada correctamente';
                 } else {
-                    $result['error'] = 'Ocurrió un problema al modificar el punto de venta';
+                    $result['error'] = 'Ocurrió un problema al modificar el tipo de producto';
                 }
                 break;
-
-
             case 'deleteRow':
-                if (!$Puntoventa->setidPuntoVenta($_POST['idPuntoVenta'])) {
-                    $result['error'] = $Puntoventa->getDataError();
-                } elseif ($Puntoventa->deleteRow()) {
+                if (
+                    !$tipoProducto->setId($_POST['idTipoProducto'])
+                ) {
+                    $result['error'] = $tipoProducto->getDataError();
+                } elseif ($tipoProducto->deleteRow()) {
                     $result['status'] = 1;
-                    $result['message'] = 'Punto de venta eliminado correctamente';
+                    $result['message'] = 'Tipo de producto eliminado correctamente';
                 } else {
-                    $result['error'] = 'Ocurrió un problema al eliminar el Punto de venta';
+                    $result['error'] = 'Ocurrió un problema al eliminar el tipo producto';
                 }
                 break;
-
-                    case 'PuntoVentaGrafico':
-                        if ($result['dataset'] = $Puntoventa->PuntoVentaGrafico()) {
-                            $result['status'] = 1;
-                        } else {
-                            $result['error'] = 'No hay datos disponibles';
-                        }
-                        break;
             default:
                 $result['error'] = 'Acción no disponible dentro de la sesión';
         }

@@ -1,15 +1,15 @@
 <?php
 // Se incluye la clase del modelo.
-require_once('../../models/data/admin_ingreso_data.php');
+require_once('../../models/data/talla_data.php');
 
 // Se comprueba si existe una acción a realizar, de lo contrario se finaliza el script con un mensaje de error.
 if (isset($_GET['action'])) {
     // Se crea una sesión o se reanuda la actual para poder utilizar variables de sesión en el script.
     session_start();
     // Se instancia la clase correspondiente.
-    $entrada = new EntradasData;
+    $talla = new TallaData;
     // Se declara e inicializa un arreglo para guardar el resultado que retorna la API.
-    $result = array('status' => 0, 'message' => null, 'dataset' => null, 'error' => null, 'exception' => null, 'fileStatus' => null);
+    $result = array('status' => 0, 'message' => null, 'dataset' => null, 'error' => null, 'exception' => null);
     // Se verifica si existe una sesión iniciada como administrador, de lo contrario se finaliza el script con un mensaje de error.
     if (isset($_SESSION['idAdministrador'])) {
         // Se compara la acción a realizar cuando un administrador ha iniciado sesión.
@@ -17,77 +17,67 @@ if (isset($_GET['action'])) {
             case 'searchRows':
                 if (!Validator::validateSearch($_POST['search'])) {
                     $result['error'] = Validator::getSearchError();
-                } elseif ($result['dataset'] = $entrada->searchRows()) {
+                } elseif ($result['dataset'] = $talla->searchRows()) {
                     $result['status'] = 1;
                     $result['message'] = 'Existen ' . count($result['dataset']) . ' coincidencias';
                 } else {
                     $result['error'] = 'No hay coincidencias';
                 }
                 break;
-                case 'createRow':
-                    $_POST = Validator::validateForm($_POST);
-                    if (
-                        !$entrada->setNota($_POST['notaEntrada']) or
-                        !$entrada->setFecha($_POST['fechaEntrada']) or
-                        !$entrada->setTipoEntrada($_POST['tipoEntrada']) or
-                        !$entrada->setNumeroEntrada($_POST['numeroEntrada'])
-                    ) {
-                        $result['error'] = $entrada->getDataError();
-                    } elseif ($entrada->createRow()) {
-                        $result['status'] = 1;
-                        $result['message'] = 'entrada$entrada creado correctamente';
-                        //Se asigna el estado del archivo después de insertar.
-                    } else {
-                        $result['error'] = 'Ocurrió un problema al crear un entrada$entrada';
-                    }
-                    break;
+            case 'createRow':
+                $_POST = Validator::validateForm($_POST);
+                if (!$talla->setTalla($_POST['nombreTalla'])) {
+                    $result['error'] = $talla->getDataError();
+                } elseif ($talla->createRow()) {
+                    $result['status'] = 1;
+                    $result['message'] = 'Talla creada correctamente';
+                } else {
+                    $result['error'] = 'Ocurrió un problema al crear la talla';
+                }
+                break;
             case 'readAll':
-                if ($result['dataset'] = $entrada->readAll()) {
+                if ($result['dataset'] = $talla->readAll()) {
                     $result['status'] = 1;
                     $result['message'] = 'Existen ' . count($result['dataset']) . ' registros';
                 } else {
-                    $result['error'] = 'No existen entradas registrados';
+                    $result['error'] = 'No existen tallas registradas';
                 }
                 break;
             case 'readOne':
-                if (!$entrada->setId($_POST['idEntrada'])) {
-                    $result['error'] = $entrada->getDataError();
-                } elseif ($result['dataset'] = $entrada->readOne()) {
+                if (!$talla->setId($_POST['idTalla'])) {
+                    $result['error'] = $talla->getDataError();
+                } elseif ($result['dataset'] = $talla->readOne()) {
                     $result['status'] = 1;
                 } else {
-                    $result['error'] = 'entrada inexistente';
+                    $result['error'] = 'Talla inexistente';
                 }
                 break;
             case 'updateRow':
                 $_POST = Validator::validateForm($_POST);
                 if (
-                    !$entrada->setId($_POST['idEntrada']) or
-                    !$entrada->setNota($_POST['notaEntrada']) or
-                    !$entrada->setFecha($_POST['fechaEntrada']) or
-                    !$entrada->setTipoEntrada($_POST['tipoEntrada']) or
-                    !$entrada->setNumeroEntrada($_POST['numeroEntrada'])
+                    !$talla->setId($_POST['idTalla']) or
+                    !$talla->setTalla($_POST['nombreTalla'])
                 ) {
-                    $result['error'] = $entrada->getDataError();
-                } elseif ($entrada->updateRow()) {
+                    $result['error'] = $talla->getDataError();
+                } elseif ($talla->updateRow()) {
                     $result['status'] = 1;
-                    $result['message'] = 'entrada modificado correctamente';
+                    $result['message'] = 'Talla modificada correctamente';
                 } else {
-                    $result['error'] = 'Ocurrió un problema al modificar la entrada';
+                    $result['error'] = 'Ocurrió un problema al modificar la talla';
                 }
                 break;
             case 'deleteRow':
                 if (
-                    !$entrada->setId($_POST['idEntrada'])
+                    !$talla->setId($_POST['idTalla'])
                 ) {
-                    $result['error'] = $entrada->getDataError();
-                } elseif ($entrada->deleteRow()) {
+                    $result['error'] = $talla->getDataError();
+                } elseif ($talla->deleteRow()) {
                     $result['status'] = 1;
-                    $result['message'] = 'entrada eliminado correctamente';
+                    $result['message'] = 'Talla eliminado correctamente';
                 } else {
-                    $result['error'] = 'Ocurrió un problema al eliminar el entrada';
+                    $result['error'] = 'Ocurrió un problema al eliminar la talla';
                 }
                 break;
-                
             default:
                 $result['error'] = 'Acción no disponible dentro de la sesión';
         }

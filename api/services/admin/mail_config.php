@@ -11,16 +11,13 @@ function sendEmail($to, $subject, $body) {
         $mail->isSMTP();
         $mail->Host = 'smtp.gmail.com'; // Especifica el servidor SMTP
         $mail->SMTPAuth = true;
-        $mail->Username = 'prettyusine@gmail.com'; // Correo de origen
-        $mail->Password = 'qais soyv sabt nrpg'; // Contraseña del correo de origen
+        $mail->Username = 'sportsfusion.contacts@gmail.com'; // Correo de origen
+        $mail->Password = 'ztnh jojk rkpq hahv'; // Contraseña del correo de origen
         $mail->SMTPSecure = PHPMailer::ENCRYPTION_STARTTLS;
         $mail->Port = 587; // Puerto SMTP
 
-        // Codificación para tildes y ñ
-        $mail->CharSet = 'UTF-8';
-
         // Destinatarios
-        $mail->setFrom('prettyusine@gmail.com', 'PrettyUsine El Salvador');
+        $mail->setFrom('sportsfusion.contacts@gmail.com', 'SportsFusion');
         $mail->addAddress($to);
 
         // Contenido del correo

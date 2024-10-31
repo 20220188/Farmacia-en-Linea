@@ -1,6 +1,6 @@
 <?php
 // Se incluye la clase del modelo.
-require_once('../../models/data/pedido_data.php');
+require_once('../../models/data/pedidos_data.php');
 
 // Se comprueba si existe una acción a realizar, de lo contrario se finaliza el script con un mensaje de error.
 if (isset($_GET['action'])) {
@@ -15,14 +15,15 @@ if (isset($_GET['action'])) {
         $result['session'] = 1;
         // Se compara la acción a realizar cuando un cliente ha iniciado sesión.
         switch ($_GET['action']) {
-            // Acción para agregar un producto al carrito de compras.
+                // Acción para agregar un producto al carrito de compras.
             case 'createDetail':
                 $_POST = Validator::validateForm($_POST);
                 if (!$pedido->startOrder()) {
                     $result['error'] = 'Ocurrió un problema al iniciar el pedido';
                 } elseif (
-                    !$pedido->setProducto($_POST['idProducto']) or
+                    !$pedido->setId_Producto($_POST['idProducto']) or
                     !$pedido->setCantidad($_POST['cantidadProducto'])
+
                 ) {
                     $result['error'] = $pedido->getDataError();
                 } elseif ($pedido->createDetail()) {
@@ -32,7 +33,7 @@ if (isset($_GET['action'])) {
                     $result['error'] = 'Ocurrió un problema al agregar el producto';
                 }
                 break;
-            // Acción para obtener los productos agregados en el carrito de compras.
+                // Acción para obtener los productos agregados en el carrito de compras.
             case 'readDetail':
                 if (!$pedido->getOrder()) {
                     $result['error'] = 'No ha agregado productos al carrito';
@@ -42,11 +43,44 @@ if (isset($_GET['action'])) {
                     $result['error'] = 'No existen productos en el carrito';
                 }
                 break;
-            // Acción para actualizar la cantidad de un producto en el carrito de compras.
+            case 'readHistorial':
+                if ($result['dataset'] = $pedido->readHistorial()) {
+                    $result['status'] = 1;
+                } else {
+                    $result['error'] = 'No existen resultados para mostrar';
+                }
+                break;
+                case 'readDetalleHistorialMovil':
+                    $input = json_decode(file_get_contents('php://input'), true);
+                    error_log("Datos recibidos: " . print_r($input, true)); // Agrega un log para verificar los datos recibidos
+                    if (isset($input['idDetalle']) && $pedido->setId($input['idDetalle'])) {
+                        if ($result['dataset'] = $pedido->readDetalleHistorial()) {
+                            $result['status'] = 1;
+                            $result['message'] = 'Existen ' . count($result['dataset']) . ' registros';
+                        } else {
+                            $result['error'] = 'No existen resultados para mostrar';
+                        }
+                    } else {
+                        $result['error'] = 'El identificador del pedido es incorrecto';
+                    }
+                    break;
+                    case 'readDetalleHistorial':
+                        if (!$pedido->setId($_POST['idPedido'])) {
+                            $result['error'] = $pedido->getDataError();
+                        } elseif ($result['dataset'] = $pedido->readDetalleHistorial()) {
+                            $result['status'] = 1;
+                            $result['message'] = 'Existen ' . count($result['dataset']) . ' registros';
+                        } else {
+                            $result['error'] = 'No existen resultados para mostrar';
+                        }
+                        break;
+                
+                
+                // Acción para actualizar la cantidad de un producto en el carrito de compras.
             case 'updateDetail':
                 $_POST = Validator::validateForm($_POST);
                 if (
-                    !$pedido->setIdDetalle($_POST['idDetalle']) or
+                    !$pedido->setDetallePedido($_POST['idDetalle']) or
                     !$pedido->setCantidad($_POST['cantidadProducto'])
                 ) {
                     $result['error'] = $pedido->getDataError();
@@ -57,9 +91,9 @@ if (isset($_GET['action'])) {
                     $result['error'] = 'Ocurrió un problema al modificar la cantidad';
                 }
                 break;
-            // Acción para remover un producto del carrito de compras.
+                // Acción para remover un producto del carrito de compras.
             case 'deleteDetail':
-                if (!$pedido->setIdDetalle($_POST['idDetalle'])) {
+                if (!$pedido->setDetallePedido($_POST['idDetalle'])) {
                     $result['error'] = $pedido->getDataError();
                 } elseif ($pedido->deleteDetail()) {
                     $result['status'] = 1;
@@ -68,7 +102,7 @@ if (isset($_GET['action'])) {
                     $result['error'] = 'Ocurrió un problema al remover el producto';
                 }
                 break;
-            // Acción para finalizar el carrito de compras.
+                // Acción para finalizar el carrito de compras.
             case 'finishOrder':
                 if ($pedido->finishOrder()) {
                     $result['status'] = 1;
@@ -77,6 +111,7 @@ if (isset($_GET['action'])) {
                     $result['error'] = 'Ocurrió un problema al finalizar el pedido';
                 }
                 break;
+                
             default:
                 $result['error'] = 'Acción no disponible dentro de la sesión';
         }
@@ -84,10 +119,20 @@ if (isset($_GET['action'])) {
         // Se compara la acción a realizar cuando un cliente no ha iniciado sesión.
         switch ($_GET['action']) {
             case 'createDetail':
-                $result['error'] = 'Debe iniciar sesión para agregar el producto al carrito';
-                break;
-            default:
-                $result['error'] = 'Acción no disponible fuera de la sesión';
+                if (isset($_POST['idProducto']) && isset($_POST['cantidadProducto'])) {
+                    $_POST = Validator::validateForm($_POST);
+                    if (!$pedido->setId_Producto($_POST['idProducto']) || !$pedido->setCantidad($_POST['cantidadProducto'])) {
+                        $result['error'] = $pedido->getDataError();
+                    } elseif ($pedido->createDetail()) {
+                        $result['status'] = 1;
+                        $result['message'] = 'Producto agregado correctamente';
+                    } else {
+                        $result['error'] = 'Ocurrió un problema al agregar el producto';
+                    }
+                } else {
+                    $result['error'] = 'Los datos no son válidos';
+                }
+                
         }
     }
     // Se obtiene la excepción del servidor de base de datos por si ocurrió un problema.

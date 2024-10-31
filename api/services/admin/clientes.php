@@ -1,13 +1,13 @@
 <?php
 // Se incluye la clase del modelo.
-require_once ('../../models/data/admin_maestro_cliente_data.php');
+require_once('../../models/data/clientes_data.php');
 
 // Se comprueba si existe una acción a realizar, de lo contrario se finaliza el script con un mensaje de error.
 if (isset($_GET['action'])) {
     // Se crea una sesión o se reanuda la actual para poder utilizar variables de sesión en el script.
     session_start();
     // Se instancia la clase correspondiente.
-    $cliente = new clienteData;
+    $cliente = new ClienteData;
     // Se declara e inicializa un arreglo para guardar el resultado que retorna la API.
     $result = array('status' => 0, 'message' => null, 'dataset' => null, 'error' => null, 'exception' => null, 'fileStatus' => null);
     // Se verifica si existe una sesión iniciada como administrador, de lo contrario se finaliza el script con un mensaje de error.
@@ -28,22 +28,20 @@ if (isset($_GET['action'])) {
                 $_POST = Validator::validateForm($_POST);
                 if (
                     !$cliente->setNombre($_POST['nombreCliente']) or
-                    !$cliente->setDUI($_POST['NitCliente']) or
-                    !$cliente->setNRC($_POST['NrcCliente']) or
-                    !$cliente->setTipoCliente($_POST['TipoCliente']) or
-                    !$cliente->setNombreComercial($_POST['NombreCo']) or
-                    !$cliente->setCodigo($_POST['CodigoCliente']) or
-                    !$cliente->setDireccion($_POST['DireccionCliente']) or
-                    !$cliente->setTelefono($_POST['TelefonoCliente']) or
-                    !$cliente->setCorreo($_POST['CorreoCliente'])
+                    !$cliente->setTelefono($_POST['telefonoCliente']) or
+                    !$cliente->setCorreo($_POST['correoCliente']) or
+                    !$cliente->setDireccion($_POST['clienteDireccion']) or
+                    !$cliente->setClave($_POST['claveCliente']) or
+                    !$cliente->setEstado(isset($_POST['estadoCliente']) ? 1 : 0)
                 ) {
                     $result['error'] = $cliente->getDataError();
+                } elseif ($_POST['claveCliente'] != $_POST['confirmarClave']) {
+                    $result['error'] = 'Contraseñas diferentes';
                 } elseif ($cliente->createRow()) {
                     $result['status'] = 1;
                     $result['message'] = 'Cliente creado correctamente';
-                    //Se asigna el estado del archivo después de insertar.
                 } else {
-                    $result['error'] = 'Ocurrió un problema al crear un cliente';
+                    $result['error'] = 'Ocurrió un problema al crear el cliente';
                 }
                 break;
             case 'readAll':
@@ -67,15 +65,7 @@ if (isset($_GET['action'])) {
                 $_POST = Validator::validateForm($_POST);
                 if (
                     !$cliente->setId($_POST['idCliente']) or
-                    !$cliente->setNombre($_POST['nombreCliente']) or
-                    !$cliente->setDUI($_POST['NitCliente']) or
-                    !$cliente->setNRC($_POST['NrcCliente']) or
-                    !$cliente->setTipoCliente($_POST['TipoCliente']) or
-                    !$cliente->setNombreComercial($_POST['NombreCo']) or
-                    !$cliente->setCodigo($_POST['CodigoCliente']) or
-                    !$cliente->setDireccion($_POST['DireccionCliente']) or
-                    !$cliente->setTelefono($_POST['TelefonoCliente']) or
-                    !$cliente->setCorreo($_POST['CorreoCliente'])
+                    !$cliente->setEstado(isset($_POST['estadoCliente']) ? 1 : 0) 
                 ) {
                     $result['error'] = $cliente->getDataError();
                 } elseif ($cliente->updateRow()) {
@@ -105,10 +95,10 @@ if (isset($_GET['action'])) {
         // Se indica el tipo de contenido a mostrar y su respectivo conjunto de caracteres.
         header('Content-type: application/json; charset=utf-8');
         // Se imprime el resultado en formato JSON y se retorna al controlador.
-        print (json_encode($result));
+        print(json_encode($result));
     } else {
-        print (json_encode('Acceso denegado'));
+        print(json_encode('Acceso denegado'));
     }
 } else {
-    print (json_encode('Recurso no disponible'));
+    print(json_encode('Recurso no disponible'));
 }

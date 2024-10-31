@@ -1,15 +1,15 @@
 <?php
 // Se incluye la clase del modelo.
-require_once('../../models/data/admin_maestro_laboratorios_data.php');
+require_once('../../models/data/estado_pedido_data.php');
 
 // Se comprueba si existe una acción a realizar, de lo contrario se finaliza el script con un mensaje de error.
 if (isset($_GET['action'])) {
     // Se crea una sesión o se reanuda la actual para poder utilizar variables de sesión en el script.
     session_start();
     // Se instancia la clase correspondiente.
-    $laboratorio = new LaboratoriosData;
+    $estadoPedido = new EstadoPedidoData;
     // Se declara e inicializa un arreglo para guardar el resultado que retorna la API.
-    $result = array('status' => 0, 'message' => null, 'dataset' => null, 'error' => null, 'exception' => null, 'fileStatus' => null);
+    $result = array('status' => 0, 'message' => null, 'dataset' => null, 'error' => null, 'exception' => null);
     // Se verifica si existe una sesión iniciada como administrador, de lo contrario se finaliza el script con un mensaje de error.
     if (isset($_SESSION['idAdministrador'])) {
         // Se compara la acción a realizar cuando un administrador ha iniciado sesión.
@@ -17,7 +17,7 @@ if (isset($_GET['action'])) {
             case 'searchRows':
                 if (!Validator::validateSearch($_POST['search'])) {
                     $result['error'] = Validator::getSearchError();
-                } elseif ($result['dataset'] = $laboratorio->searchRows()) {
+                } elseif ($result['dataset'] = $estadoPedido->searchRows()) {
                     $result['status'] = 1;
                     $result['message'] = 'Existen ' . count($result['dataset']) . ' coincidencias';
                 } else {
@@ -26,74 +26,58 @@ if (isset($_GET['action'])) {
                 break;
             case 'createRow':
                 $_POST = Validator::validateForm($_POST);
-                if (
-                    !$laboratorio->setNombre($_POST['nombreLaboratorio']) or
-                    !$laboratorio->setCodigo($_POST['codigoLaboratorio'])
-                ) {
-                    $result['error'] = $laboratorio->getDataError();
-                } elseif ($laboratorio->createRow()) {
+                if (!$estadoPedido->setEstado($_POST['estadoPedido'])) {
+                    $result['error'] = $estadoPedido->getDataError();
+                } elseif ($estadoPedido->createRow()) {
                     $result['status'] = 1;
-                    $result['message'] = 'Laboratorio creado correctamente';
+                    $result['message'] = 'Estado de pedido creada correctamente';
                 } else {
-                    $result['exception'] = Database::getException();
-                    $result['error'] = 'Código ya existente';
+                    $result['error'] = 'Ocurrió un problema al crear el estado del pedido';
                 }
                 break;
             case 'readAll':
-                if ($result['dataset'] = $laboratorio->readAll()) {
+                if ($result['dataset'] = $estadoPedido->readAll()) {
                     $result['status'] = 1;
                     $result['message'] = 'Existen ' . count($result['dataset']) . ' registros';
                 } else {
-                    $result['error'] = 'No existen laboratorios registrados';
+                    $result['error'] = 'No existen tipos de productos registradas';
                 }
                 break;
             case 'readOne':
-                if (!$laboratorio->setId($_POST['idLab'])) {
-                    $result['error'] = $laboratorio->getDataError();
-                } elseif ($result['dataset'] = $laboratorio->readOne()) {
+                if (!$estadoPedido->setId($_POST['idEstadoPedido'])) {
+                    $result['error'] = $estadoPedido->getDataError();
+                } elseif ($result['dataset'] = $estadoPedido->readOne()) {
                     $result['status'] = 1;
                 } else {
-                    $result['error'] = 'Laboratorio inexistente';
+                    $result['error'] = 'Tipo de producto inexistente';
                 }
                 break;
             case 'updateRow':
                 $_POST = Validator::validateForm($_POST);
                 if (
-                    !$laboratorio->setId($_POST['idLab']) or
-                    !$laboratorio->setNombre($_POST['nombreLaboratorio']) or
-                    !$laboratorio->setCodigo($_POST['codigoLaboratorio'])
+                    !$estadoPedido->setId($_POST['idEstadoPedido']) or
+                    !$estadoPedido->setEstado($_POST['estadoPedido'])
                 ) {
-                    $result['error'] = $laboratorio->getDataError();
-                } elseif ($laboratorio->updateRow()) {
+                    $result['error'] = $estadoPedido->getDataError();
+                } elseif ($estadoPedido->updateRow()) {
                     $result['status'] = 1;
-                    $result['message'] = 'Laboratorio modificado correctamente';
+                    $result['message'] = 'Estado de pedido modificada correctamente';
                 } else {
-                    $result['error'] = 'Ocurrió un problema al modificar el laboratorio';
+                    $result['error'] = 'Ocurrió un problema al modificar el estado del pedido';
                 }
                 break;
             case 'deleteRow':
                 if (
-                    !$laboratorio->setId($_POST['idLab'])
+                    !$estadoPedido->setId($_POST['idEstadoPedido'])
                 ) {
-                    $result['error'] = $laboratorio->getDataError();
-                } elseif ($laboratorio->deleteRow()) {
+                    $result['error'] = $estadoPedido->getDataError();
+                } elseif ($estadoPedido->deleteRow()) {
                     $result['status'] = 1;
-                    $result['message'] = 'Laboratorio eliminado correctamente';
+                    $result['message'] = 'Estado de pedido eliminado correctamente';
                 } else {
-                    $result['error'] = 'Ocurrió un problema al eliminar el laboratorio';
+                    $result['error'] = 'Ocurrió un problema al eliminar el estado del pedido';
                 }
                 break;
-
-
-            case 'getUltimosLaboratorios':
-                if ($result['dataset'] = $laboratorio->getUltimosLaboratorios()) {
-                    $result['status'] = 1;
-                    $result['message'] = 'Datos obtenidos correctamente';
-                } else {
-                    $result['error'] = 'No hay datos disponibles';
-                }
-                break;
-
             default:
                 $result['error'] = 'Acción no disponible dentro de la sesión';
         }
@@ -109,4 +93,3 @@ if (isset($_GET['action'])) {
 } else {
     print(json_encode('Recurso no disponible'));
 }
-?>

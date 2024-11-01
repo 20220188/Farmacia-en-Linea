@@ -2,25 +2,27 @@
 // Se incluye la clase con las plantillas para generar reportes.
 require_once('../../helpers/report.php');
 // Se incluyen las clases para la transferencia y acceso a datos.
-require_once('../../models/data/producto_data.php');
-require_once('../../models/data/categoria_data.php');
+require_once('../../models/data/clientes_data.php');
+require_once('../../models/data/pedidos_data.php');
 
 // Se instancia la clase para crear el reporte.
 $pdf = new Report;
 // Se inicia el reporte con el encabezado del documento.
-$pdf->startReport('Productos por categoría');
+$pdf->startReport('Pedidos por cliente');
 // Se instancia el módelo Categoría para obtener los datos.
-$categoria = new CategoriaData;
+$cliente = new ClienteData;
 // Se verifica si existen registros para mostrar, de lo contrario se imprime un mensaje.
-if ($dataCategorias = $categoria->readAll()) {
+if ($dataClientes = $cliente->readAll()) {
     // Se establece un color de relleno para los encabezados.
     $pdf->setFillColor(200);
     // Se establece la fuente para los encabezados.
     $pdf->setFont('Arial', 'B', 11);
     // Se imprimen las celdas con los encabezados.
-    $pdf->cell(126, 10, 'Nombre', 1, 0, 'C', 1);
+    $pdf->cell(15, 10, 'Pedido', 1, 0, 'C', 1);
+    $pdf->cell(80, 10, 'Nombre', 1, 0, 'C', 1);
     $pdf->cell(30, 10, 'Precio (US$)', 1, 0, 'C', 1);
-    $pdf->cell(30, 10, 'Estado', 1, 1, 'C', 1);
+    $pdf->cell(21, 10, 'Cantidad', 1, 0, 'C', 1);
+    $pdf->cell(40, 10, 'fecha de registro', 1, 1, 'C', 1);
 
     // Se establece un color de relleno para mostrar el nombre de la categoría.
     $pdf->setFillColor(240);
@@ -28,32 +30,33 @@ if ($dataCategorias = $categoria->readAll()) {
     $pdf->setFont('Arial', '', 11);
 
     // Se recorren los registros fila por fila.
-    foreach ($dataCategorias as $rowCategoria) {
+    foreach ($dataClientes as $rowCliente) {
         // Se imprime una celda con el nombre de la categoría.
-        $pdf->cell(0, 10, $pdf->encodeString('Categoría: ' . $rowCategoria['nombre_categoria']), 1, 1, 'C', 1);
+        $pdf->cell(0, 10, $pdf->encodeString('Cliente: ' . $rowCliente['nombre_cliente']), 1, 1, 'C', 1);
         // Se instancia el módelo Producto para procesar los datos.
-        $producto = new ProductoData;
+        $pedido = new PedidoData;
         // Se establece la categoría para obtener sus productos, de lo contrario se imprime un mensaje de error.
-        if ($producto->setCategoria($rowCategoria['id_categoria'])) {
+        if ($pedido->setId_cliente($rowCliente['id_cliente'])) {
             // Se verifica si existen registros para mostrar, de lo contrario se imprime un mensaje.
-            if ($dataProductos = $producto->productosCategoria()) {
+            if ($dataPedidos = $pedido->PedidosClientes()) {
                 // Se recorren los registros fila por fila.
-                foreach ($dataProductos as $rowProducto) {
-                    ($rowProducto['estado_producto']) ? $estado = 'Activo' : $estado = 'Inactivo';
+                foreach ($dataPedidos as $rowPedido) {
                     // Se imprimen las celdas con los datos de los productos.
-                    $pdf->cell(126, 10, $pdf->encodeString($rowProducto['nombre_producto']), 1, 0);
-                    $pdf->cell(30, 10, $rowProducto['precio_producto'], 1, 0);
-                    $pdf->cell(30, 10, $estado, 1, 1);
+                    $pdf->cell(15, 10, $rowPedido['id_pedido'], 1, 0);
+                    $pdf->cell(80, 10, $pdf->encodeString($rowPedido['nombre_producto']), 1, 0);
+                    $pdf->cell(30, 10, $rowPedido['precio_pedido'], 1, 0);
+                    $pdf->cell(21, 10, $rowPedido['cantidad_pedido'], 1, 0);
+                    $pdf->cell(40, 10, $rowPedido['fecha_registro'], 1, 1);
                 }
             } else {
-                $pdf->cell(0, 10, $pdf->encodeString('No hay productos para la categoría'), 1, 1);
+                $pdf->cell(0, 10, $pdf->encodeString('No hay pedidos por clientes'), 1, 1);
             }
         } else {
-            $pdf->cell(0, 10, $pdf->encodeString('Categoría incorrecta o inexistente'), 1, 1);
+            $pdf->cell(0, 10, $pdf->encodeString('Cliente incorrecta o inexistente'), 1, 1);
         }
     }
 } else {
-    $pdf->cell(0, 10, $pdf->encodeString('No hay categorías para mostrar'), 1, 1);
+    $pdf->cell(0, 10, $pdf->encodeString('No hay pedidos para mostrar'), 1, 1);
 }
 // Se llama implícitamente al método footer() y se envía el documento al navegador web.
-$pdf->output('I', 'productos.pdf');
+$pdf->output('I', 'pedidos.pdf');

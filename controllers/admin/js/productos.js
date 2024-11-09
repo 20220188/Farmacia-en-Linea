@@ -154,8 +154,7 @@ const fillTable = async (form = null) => {
                     <td>${row.nombre_producto}</td>
                     <td>${row.nombre_categoria}</td>
                     <td>${row.tipo_producto}</td>
-                    <td>${row.genero}</td>
-                    <td>${row.nombre_deporte}</td>
+                    <td>${row.descripcion}</td>
                     <td>
                         <button type="button" class="btn btn-success" onclick="openDetails(${row.id_producto})">
                         <i class="fa-regular fa-square-plus"></i>
@@ -190,8 +189,6 @@ const openCreate = () => {
     SAVE_FORM.reset();
     fillSelect(CATEGORIA_API, 'readAll', 'categoriaProducto');
     fillSelect(TIPO_PRODUCTO_API, 'readAll_TipoP', 'tipoProducto');
-    fillSelect(DEPORTE_API, 'readAll', 'deporteProducto');
-    fillSelect(GENERO_API, 'readAll', 'generoProducto');
 }
 
 /*

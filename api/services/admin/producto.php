@@ -24,27 +24,25 @@ if (isset($_GET['action'])) {
                     $result['error'] = 'No hay coincidencias';
                 }
                 break;
-            case 'createRow':
-                $_POST = Validator::validateForm($_POST);
-                if (
-                    !$producto->setNombre($_POST['nombreProducto']) or
-                    !$producto->setDescripcion($_POST['descripcionProducto']) or
-                    !$producto->setCategoria($_POST['categoriaProducto']) or
-                    !$producto->setTipoProducto($_POST['tipoProducto']) or
-                    !$producto->setDeporte($_POST['deporteProducto']) or
-                    !$producto->setImagen($_FILES['imagenProducto'])  or
-                    !$producto->setGenero($_POST['generoProducto'])
-                ) {
-                    $result['error'] = $producto->getDataError();
-                } elseif ($producto->createRow()) {
-                    $result['status'] = 1;
-                    $result['message'] = 'Producto creado correctamente';
-                    // Se asigna el estado del archivo después de insertar.
-                    $result['fileStatus'] = Validator::saveFile($_FILES['imagenProducto'], $producto::RUTA_IMAGEN);
-                } else {
-                    $result['exception'] = Database::getException();
-                }
-                break;
+                case 'createRow':
+                    $_POST = Validator::validateForm($_POST);
+                    if (
+                        !$producto->setNombre($_POST['nombreProducto']) or
+                        !$producto->setDescripcion($_POST['descripcionProducto']) or
+                        !$producto->setCategoria($_POST['categoriaProducto']) or
+                        !$producto->setTipoProducto($_POST['tipoProducto']) or
+                        !$producto->setImagen($_FILES['imagenProducto']) 
+                    ) {
+                        $result['error'] = $producto->getDataError();
+                    } elseif ($producto->createRow()) {
+                        $result['status'] = 1;
+                        $result['message'] = 'Producto creado correctamente';
+                        // Se asigna el estado del archivo después de insertar.
+                        $result['fileStatus'] = Validator::saveFile($_FILES['imagenProducto'], $producto::RUTA_IMAGEN);
+                    } else {
+                        $result['exception'] = Database::getException();
+                    }
+                    break;
             case 'readAll':
                 if ($result['dataset'] = $producto->readAll()) {
                     $result['status'] = 1;
@@ -71,8 +69,6 @@ if (isset($_GET['action'])) {
                     !$producto->setDescripcion($_POST['descripcionProducto']) or
                     !$producto->setCategoria($_POST['categoriaProducto']) or
                     !$producto->setTipoProducto($_POST['tipoProducto']) or
-                    !$producto->setDeporte($_POST['deporteProducto']) or
-                    !$producto->setGenero($_POST['generoProducto']) or
                     !$producto->setImagen($_FILES['imagenProducto'], $producto->getFilename())
                 ) {
                     $result['error'] = $producto->getDataError();
@@ -106,7 +102,6 @@ if (isset($_GET['action'])) {
                 if (
                     !$producto->setPrecio($_POST['precioDetalle']) or
                     !$producto->setExistencias($_POST['existenciasDetalle']) or
-                    !$producto->setTalla($_POST['tallaDetalle']) or
                     !$producto->setId($_POST['idProductoDetalle'])
                 ) {
                     $result['error'] = $producto->getDataError();

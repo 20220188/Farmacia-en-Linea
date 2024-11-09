@@ -23,6 +23,12 @@ const plantillaSideBar =  `
         </a>
     </li>
     <li class="sidebar-item">
+        <a href="categorias.html" class="sidebar-link">
+            <i class="fa-solid fa-list"></i>
+            <span>Categorías</span>
+        </a>
+    </li>
+    <li class="sidebar-item">
         <a href="productos.html" class="sidebar-link">
             <i class="fa-solid fa-book"></i>
             <span>Productos</span>

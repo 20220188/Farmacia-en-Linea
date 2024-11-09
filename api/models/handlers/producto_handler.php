@@ -48,12 +48,10 @@ class ProductoHandler
     public function searchRows()
     {
         $value = '%' . Validator::getSearchValue() . '%';
-        $sql = 'SELECT id_producto, imagen, nombre_producto, descripcion, nombre_categoria, tipo_producto, nombre_deporte,genero    
+        $sql = 'SELECT id_producto, imagen, nombre_producto, descripcion, nombre_categoria, tipo_producto    
                 FROM tb_productos
                 INNER JOIN tb_categorias USING(id_categoria)
                 INNER JOIN tb_tipo_productos USING(id_tipo_producto)
-                INNER JOIN tb_deportes USING(id_deporte)
-                INNER JOIN tb_generos USING(id_genero)
                 WHERE nombre_producto LIKE ? OR descripcion LIKE ? OR nombre_categoria LIKE ? OR tipo_producto LIKE ? OR nombre_deporte LIKE ? OR genero LIKE ?
                 ORDER BY nombre_producto';
         $params = array($value, $value, $value, $value, $value, $value);
@@ -62,28 +60,26 @@ class ProductoHandler
 
     public function createRow()
     {
-        $sql = 'INSERT INTO tb_productos(nombre_producto, descripcion, imagen, id_categoria,id_tipo_producto, id_deporte, id_genero)
-                    VALUES(?, ?, ?, ?, ?, ?, ?)';
-        $params = array($this->nombre, $this->descripcion, $this->imagen, $this->id_categoria, $this->id_tipo_producto, $this->id_deporte, $this->id_genero);
+        $sql = 'INSERT INTO tb_productos(nombre_producto, descripcion, imagen, id_categoria,id_tipo_producto)
+                    VALUES(?, ?, ?, ?, ?)';
+        $params = array($this->nombre, $this->descripcion, $this->imagen, $this->id_categoria, $this->id_tipo_producto);
         //esto funciona para ver los valores que toma el arreglo print_r($params);.
         return Database::executeRow($sql, $params);
     }
 
     public function readAll()
     {
-        $sql = 'SELECT id_producto, imagen, nombre_producto, descripcion, nombre_categoria, tipo_producto, nombre_deporte,genero  
+        $sql = 'SELECT id_producto, imagen, nombre_producto, descripcion, nombre_categoria, tipo_producto  
                 FROM tb_productos
                 INNER JOIN tb_categorias USING(id_categoria)
                 INNER JOIN tb_tipo_productos USING(id_tipo_producto)
-                INNER JOIN tb_deportes USING(id_deporte)
-                INNER JOIN tb_generos using(id_genero)
                 ORDER BY nombre_producto';
         return Database::getRows($sql);
     }
 
     public function readOne()
     {
-        $sql = 'SELECT id_producto, nombre_producto, descripcion,imagen, id_categoria, id_tipo_producto, id_deporte, id_genero
+        $sql = 'SELECT id_producto, nombre_producto, descripcion,imagen, id_categoria, id_tipo_producto
                 FROM tb_productos 
                 WHERE id_producto = ?';
         $params = array($this->id);
@@ -104,9 +100,9 @@ class ProductoHandler
     public function updateRow()
     {
         $sql = 'UPDATE tb_productos 
-                SET imagen = ?, nombre_producto = ?, descripcion = ?, id_categoria = ?, id_tipo_producto = ?, id_deporte = ?, id_genero = ?
+                SET imagen = ?, nombre_producto = ?, descripcion = ?, id_categoria = ?, id_tipo_producto = ?
                 WHERE id_producto = ?';
-        $params = array($this->imagen, $this->nombre, $this->descripcion, $this->id_categoria, $this->id_tipo_producto, $this->id_deporte, $this->id_genero, $this->id);
+        $params = array($this->imagen, $this->nombre, $this->descripcion, $this->id_categoria, $this->id_tipo_producto, $this->id);
         return Database::executeRow($sql, $params);
     }
 
@@ -118,36 +114,22 @@ class ProductoHandler
         return Database::executeRow($sql, $params);
     }
 
-    public function readProductosDeporte()
-    {
-        $sql = 'SELECT id_producto, imagen, nombre_producto, descripcion, tipo_producto, nombre_deporte, genero
-                FROM tb_productos
-                INNER JOIN tb_deportes USING(id_deporte)
-                INNER JOIN tb_tipo_productos USING(id_tipo_producto)
-                INNER JOIN tb_generos USING(id_genero)
-                WHERE id_deporte = ?
-                ORDER BY nombre_producto';
-        $params = array($this->id_deporte);
-        return Database::getRows($sql, $params);
-    }
-
     /*
     *   Métodos para realizar las operaciones SCRUD en tabla DETALLE?PRODUCTO (search, create, read, update, and delete).
     */
 
     public function createRowDetalleProducto()
     {
-        $sql = 'INSERT INTO tb_detalle_productos(precio, cantidad_disponible, id_talla, id_producto)
-                    VALUES(?, ?, ?,?)';
-        $params = array($this->precio, $this->existencias, $this->id_talla, $this->id);
+        $sql = 'INSERT INTO tb_detalle_productos(precio, cantidad_disponible, id_producto)
+                    VALUES(?, ?, ?)';
+        $params = array($this->precio, $this->existencias, $this->id);
         return Database::executeRow($sql, $params);
     }
 
     public function readAllDetalle()
     {
-        $sql = 'SELECT dp.id_detalle_producto, dp.precio,dp.id_producto, dp.cantidad_disponible, t.talla, p.nombre_producto,dp.id_talla
+        $sql = 'SELECT dp.id_detalle_producto, dp.precio,dp.id_producto, dp.cantidad_disponible, p.nombre_producto
         FROM tb_detalle_productos dp
-        INNER JOIN tb_tallas t USING(id_talla)
         INNER JOIN tb_productos p USING(id_producto)
         WHERE dp.id_producto = ?';
         $params = array($this->id);
@@ -156,7 +138,7 @@ class ProductoHandler
 
     public function readOneDetalle()
     {
-        $sql = 'SELECT id_detalle_producto, precio, cantidad_disponible, id_talla, id_producto
+        $sql = 'SELECT id_detalle_producto, precio, cantidad_disponible, id_producto
                 FROM tb_detalle_productos
                 INNER JOIN tb_productos USING(id_producto) 
                 WHERE id_detalle_producto = ?';
@@ -167,9 +149,9 @@ class ProductoHandler
     public function updateRowDetalle()
     {
         $sql = 'UPDATE tb_detalle_productos 
-                SET precio = ?, cantidad_disponible = ?, id_talla = ?
+                SET precio = ?, cantidad_disponible = ? 
                 WHERE id_detalle_producto = ?';
-        $params = array($this->precio, $this->existencias, $this->id_talla, $this->id_detalle_producto);
+        $params = array($this->precio, $this->existencias, $this->id_detalle_producto);
         return Database::executeRow($sql, $params);
     }
 

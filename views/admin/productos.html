@@ -73,6 +73,8 @@
                             <th>IMAGEN</th>
                             <th>NOMBRE</th>
                             <th>CATEGORÍA</th>
+                            <th>TIPO</th>
+                            <th>DESCRIPCION</th>
                             <th>ACCIONES</th>
                         </tr>
                     </thead>
@@ -109,6 +111,11 @@
                                         <label for="categoriaProducto" class="form-label">Categoría</label>
                                         <select id="categoriaProducto" name="categoriaProducto" class="form-select"
                                             required>
+                                        </select>
+                                    </div>
+                                    <div class="col-sm-12 col-md-6">
+                                        <label for="tipoProducto" class="form-label">Tipo</label>
+                                        <select id="tipoProducto" name="tipoProducto" class="form-select" required>
                                         </select>
                                     </div>
                                     <div class="col-sm-12 col-md-6">
@@ -186,11 +193,6 @@
                                         <label for="existenciasDetalle" class="form-label">Existencias</label>
                                         <input id="existenciasDetalle" type="number" name="existenciasDetalle" min="1"
                                             step="1" class="form-control" required>
-                                    </div>
-                                    <div class="col-sm-12 col-md-6">
-                                        <label for="tallaDetalle" class="form-label">Talla</label>
-                                        <select id="tallaDetalle" name="tallaDetalle" class="form-select" required>
-                                        </select>
                                     </div>
                                 </div>
                                 <div class="modal-footer">

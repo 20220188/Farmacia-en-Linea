@@ -2,8 +2,6 @@
 const PRODUCTO_API = 'services/public/producto.php';
 const CATEGORIA_API = 'services/public/categoria.php';
 const TIPO_PRODUCTO_API = 'services/public/tipo_producto.php';
-const GENERO_API = 'services/public/genero.php';
-const DEPORTE_API = 'services/public/deporte.php';
 
 const CATEGORIA_CB = document.getElementById('categoria');
 const TIPO_PRODUCTO_CB = document.getElementById('tipoProducto');
@@ -42,14 +40,6 @@ TIPO_PRODUCTO_CB.addEventListener('change', () => {
     loadProducts();
 });
 
-GENERO_CB.addEventListener('change', () => {
-    loadProducts();
-});
-
-DEPORTE_CB.addEventListener('change', () => {
-    loadProducts();
-});
-
 // Función para cargar productos basados en la categoría seleccionada
 async function loadProducts() {
     const FORM = new FormData();
@@ -59,12 +49,6 @@ async function loadProducts() {
     }
     if (TIPO_PRODUCTO_CB.value) {
         FORM.append('idTipoProducto', TIPO_PRODUCTO_CB.value);
-    }
-    if (GENERO_CB.value) {
-        FORM.append('idGenero', GENERO_CB.value);
-    }
-    if (DEPORTE_CB.value) {
-        FORM.append('idDeporte', DEPORTE_CB.value);
     }
     const data = await fetchData(PRODUCTO_API, 'readProductos', FORM);
     // Se comprueba si la respuesta es satisfactoria, de lo contrario se muestra un mensaje con la excepción.

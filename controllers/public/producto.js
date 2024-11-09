@@ -2,7 +2,6 @@
 const PRODUCTO_API = 'services/public/producto.php';
 const CATEGORIA_API = 'services/public/categoria.php';
 const TIPO_PRODUCTO_API = 'services/public/tipo_producto.php';
-const GENERO_API = 'services/public/genero.php';
 const CATEGORIA_CB = document.getElementById('categoria');
 const TIPO_PRODUCTO_CB = document.getElementById('tipoProducto');
 const GENERO_CB = document.getElementById('genero');
@@ -22,7 +21,7 @@ document.addEventListener('DOMContentLoaded', async () => {
     const DATA = await fetchData(PRODUCTO_API, 'readProductosDeporte', FORM);
     fillSelect(CATEGORIA_API, 'readAll', 'categoria');
     fillSelect(TIPO_PRODUCTO_API, 'readAll_TipoP', 'tipoProducto');
-    fillSelect(GENERO_API, 'readAll', 'genero');
+
 
     // Inicialmente muestra los productos de la categoría seleccionada en los parámetros de la URL
     loadProducts();
@@ -41,15 +40,10 @@ TIPO_PRODUCTO_CB.addEventListener('change', () => {
     loadProducts(null,selectedValue);
 });
 
-GENERO_CB.addEventListener('change', () => {
-    const selectedValue = GENERO_CB.value;
-    loadProducts(null,null,selectedValue);
-});
-
 // Función para cargar productos basados en la categoría seleccionada
 async function loadProducts(categoria = null, tipoProducto = null, genero = null) {
     const FORM = new FormData();
-    FORM.append('idDeporte', PARAMS.get('id'));
+    FORM.append('idProducto', PARAMS.get('id'));
     if (categoria) {
         // Usar el idDeporte de los parámetros de la URL
         FORM.append('idCategoria', categoria);
@@ -57,14 +51,11 @@ async function loadProducts(categoria = null, tipoProducto = null, genero = null
     if (tipoProducto) {
         FORM.append('idTipoProducto', tipoProducto);
     }
-    if (genero) {
-        FORM.append('idGenero', genero);
-    }
    const data = await fetchData(PRODUCTO_API, 'readProductoxCategoria', FORM);
     // Se comprueba si la respuesta es satisfactoria, de lo contrario se muestra un mensaje con la excepción.
     if (data.status) {
         // Se asigna como título principal la categoría de los productos.
-        MAIN_TITLE.textContent = `Deporte: ${PARAMS.get('nombre')}`;
+        MAIN_TITLE.textContent = `Productos`;
         // Se inicializa el contenedor de productos.
         PRODUCTOS.innerHTML = '';
         // Se recorre el conjunto de registros fila por fila a través del objeto row.
@@ -79,7 +70,7 @@ async function loadProducts(categoria = null, tipoProducto = null, genero = null
                         </div>
                         <ul class="list-group list-group-flush">
                             <li class="list-group-item"><strong>Tipo de producto:</strong> ${row.tipo_producto}</li>
-                            <li class="list-group-item"><strong>Genero:</strong> ${row.genero}</li>
+                            <li class="list-group-item"><strong>Categoría:</strong> ${row.nombre_categoria}</li>
                         </ul>
                         <div class="card-body text-center">
                             <a href="detalle_producto.html?id=${row.id_producto}" class="btn btn-primary">Ver detalle</a>

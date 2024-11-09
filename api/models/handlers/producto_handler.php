@@ -212,39 +212,48 @@ class ProductoHandler
     /*CONSULTAS PARA FILTRAR RESULTADOS POR CATEGORIAS EN EL SITIO PUBLICO */
 
     public function readProductoxCategoria()
-    {
-        $sql = 'SELECT id_producto, imagen, nombre_producto, descripcion, nombre_categoria, tipo_producto, nombre_deporte, genero  
-        FROM tb_productos
-        INNER JOIN tb_categorias USING(id_categoria)
-        INNER JOIN tb_tipo_productos USING(id_tipo_producto)
-        INNER JOIN tb_deportes USING(id_deporte)
-        INNER JOIN tb_generos using(id_genero)
-        WHERE id_deporte = ?';
-        $params = array($this->id_deporte);
-        if ($this->id_categoria != null) {
-            $sql .= ' AND id_categoria = ?';
-            array_push($params, $this->id_categoria);
-        }
-        if ($this->id_tipo_producto != null) {
-            $sql .= ' AND id_tipo_producto = ?';
-            array_push($params, $this->id_tipo_producto);
-        }
-        if ($this->id_genero != null) {
-            $sql .= ' AND id_genero = ?';
-            array_push($params, $this->id_genero);
-        }
-        $sql .= ' ORDER BY nombre_producto';
-        return Database::getRows($sql, $params);
+{
+    // Consulta base para obtener los productos y sus categorías
+    $sql = 'SELECT id_producto, imagen, nombre_producto, descripcion, nombre_categoria, tipo_producto  
+            FROM tb_productos
+            INNER JOIN tb_categorias ON tb_productos.id_categoria = tb_categorias.id_categoria
+            INNER JOIN tb_tipo_productos ON tb_productos.id_tipo_producto = tb_tipo_productos.id_tipo_producto
+            WHERE 1'; // Se usa WHERE 1 para facilitar la adición de condiciones
+
+    $params = array();
+
+    // Agregar condición para id_producto si está definido
+    if ($this->id_producto != null) {
+        $sql .= ' AND id_producto = ?';
+        $params[] = $this->id_producto;
     }
+
+    // Agregar condición para id_categoria si está definido
+    if ($this->id_categoria != null) {
+        $sql .= ' AND tb_productos.id_categoria = ?';
+        $params[] = $this->id_categoria;
+    }
+
+    // Agregar condición para id_tipo_producto si está definido
+    if ($this->id_tipo_producto != null) {
+        $sql .= ' AND tb_productos.id_tipo_producto = ?';
+        $params[] = $this->id_tipo_producto;
+    }
+
+    // Ordenar por nombre del producto
+    $sql .= ' ORDER BY nombre_producto';
+
+    // Ejecutar la consulta y devolver los resultados
+    return Database::getRows($sql, $params);
+}
+
 
     public function readProductos()
     {
-        $sql = 'SELECT id_producto, imagen, nombre_producto, descripcion, nombre_categoria, tipo_producto, nombre_deporte, genero  
+        $sql = 'SELECT id_producto, imagen, nombre_producto, descripcion, nombre_categoria, tipo_producto  
         FROM tb_productos
         INNER JOIN tb_categorias USING(id_categoria)
         INNER JOIN tb_tipo_productos USING(id_tipo_producto)
-        INNER JOIN tb_deportes USING(id_deporte)
-        INNER JOIN tb_generos using(id_genero)
         WHERE id_producto != 0';
         $params = array();
         if ($this->id_categoria != null) {
@@ -254,14 +263,6 @@ class ProductoHandler
         if ($this->id_tipo_producto != null) {
             $sql .= ' AND id_tipo_producto = ?';
             array_push($params, $this->id_tipo_producto);
-        }
-        if ($this->id_genero != null) {
-            $sql .= ' AND id_genero = ?';
-            array_push($params, $this->id_genero);
-        }
-        if ($this->id_deporte != null) {
-            $sql .= ' AND id_deporte = ?';
-            array_push($params, $this->id_deporte);
         }
         $sql .= ' ORDER BY nombre_producto';
         return Database::getRows($sql, $params);

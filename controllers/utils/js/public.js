@@ -11,7 +11,7 @@ MAIN.style.paddingTop = '75px';
 MAIN.style.paddingBottom = '100px';
 MAIN.classList.add('container');
 // Se establece el título de la página web.
-document.querySelector('title').textContent = 'SportFusion - Store';
+document.querySelector('title').textContent = 'Farmacia Central - Store';
 // Constante para establecer el elemento del título principal.
 const MAIN_TITLE = document.getElementById('mainTitle');
 MAIN_TITLE.classList.add('text-center', 'py-3');
@@ -32,7 +32,7 @@ const loadTemplate = async () => {
                 <header>
                     <nav class="navbar fixed-top navbar-expand-lg bg-body-tertiary">
                         <div class="container">
-                            <a class="navbar-brand" href="index.html"><img src="../../resources/img/logoSF.png" height="50" alt="SportFusion"></a>
+                            <a class="navbar-brand" href="index.html"><img src="../../resources/img/dmsystem.png" height="50" alt="Farmacia Central"></a>
                             <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNavAltMarkup" aria-controls="navbarNavAltMarkup" aria-expanded="false" aria-label="Toggle navigation">
                                 <span class="navbar-toggler-icon"></span>
                             </button>
@@ -70,7 +70,7 @@ const loadTemplate = async () => {
             <header>
                 <nav class="navbar fixed-top navbar-expand-lg bg-body-tertiary">
                     <div class="container"> 
-                        <a class="navbar-brand" href="index.html"><img src="../../resources/img/logoSF.png" height="50" alt="SportFusion"></a>
+                        <a class="navbar-brand" href="index.html"><img src="../../resources/img/dmsystem.png" height="50" alt="Farmacia Central"></a>
                         <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNavAltMarkup" aria-controls="navbarNavAltMarkup" aria-expanded="false" aria-label="Toggle navigation">
                             <span class="navbar-toggler-icon"></span>
                         </button>
@@ -93,12 +93,13 @@ const loadTemplate = async () => {
             <nav class="navbar fixed-bottom bg-body-tertiary">
                 <div class="container">
                     <div>
-                        <h6>SportsFusion</h6>
-                        <p> Todos los derechos reservados - 2024  </p>
+                        <h6>Farmacia Central de San Juan Opico</h6>
+                        <p> Todos los derechos reservados - 2024 </p> 
+                        
                     </div>
                     <div>
-                        <h6>Integrantes</h6>
-                        <p> | Jafet Melara - 20220188 | Kevin Rodríguez - 20220286 | Dominic Mejía - 20220211 | </p>
+                        <h6>Diseñador -  Creador</h6>
+                        <p>  Jafet Melara </p>
                     </div>
                 </div>
             </nav>

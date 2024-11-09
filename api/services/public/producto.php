@@ -22,10 +22,9 @@ if (isset($_GET['action'])) {
             break;
         case 'readProductoxCategoria':
             if (
-                !$producto->setDeporte($_POST['idDeporte']) or
+                
                 !$producto->setCategoria(isset($_POST['idCategoria']) ? $_POST['idCategoria'] : null) or
-                !$producto->setTipoProducto(isset($_POST['idTipoProducto']) ? $_POST['idTipoProducto'] : null) or
-                !$producto->setGenero(isset($_POST['idGenero']) ? $_POST['idGenero'] : null)
+                !$producto->setTipoProducto(isset($_POST['idTipoProducto']) ? $_POST['idTipoProducto'] : null) 
             ) {
                 $result['error'] = $producto->getDataError();
             } elseif ($result['dataset'] = $producto->readProductoxCategoria()) {
@@ -54,10 +53,9 @@ if (isset($_GET['action'])) {
             break;
         case 'readProductos':
             if (
-                !$producto->setDeporte(isset($_POST['idDeporte']) ? $_POST['idDeporte'] : null) or
+                
                 !$producto->setCategoria(isset($_POST['idCategoria']) ? $_POST['idCategoria'] : null) or
-                !$producto->setTipoProducto(isset($_POST['idTipoProducto']) ? $_POST['idTipoProducto'] : null) or
-                !$producto->setGenero(isset($_POST['idGenero']) ? $_POST['idGenero'] : null)
+                !$producto->setTipoProducto(isset($_POST['idTipoProducto']) ? $_POST['idTipoProducto'] : null) 
             ) {
                 $result['error'] = $producto->getDataError();
             } elseif ($result['dataset'] = $producto->readProductos()) {

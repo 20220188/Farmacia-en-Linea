@@ -5,3 +5,45 @@ aside{
 h3{
     margin-top: 20px;
 }
+
+.icon-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    margin: 0 10px;
+    text-align: center;
+}
+
+.icon-container .nav-link {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 50px;
+    height: 50px;
+    background-color: #f1f3f5; /* Fondo claro para el círculo */
+    border-radius: 50%;
+    font-size: 24px; /* Tamaño del ícono */
+    color: #333; /* Color del ícono */
+    text-decoration: none;
+}
+
+.icon-container span {
+    font-size: 14px;
+    color: #333;
+    margin-top: 5px;
+}
+
+/* Opcional: Estilos adicionales para el dropdown */
+.icon-container .dropdown-menu .dropdown-item {
+    display: flex;
+    align-items: center;
+    gap: 8px; /* Espacio entre el ícono y el texto */
+    color: #333; /* Color del texto e ícono */
+    font-size: 16px;
+}
+
+.icon-container .dropdown-menu .dropdown-item i {
+    font-size: 18px;
+}
+
+

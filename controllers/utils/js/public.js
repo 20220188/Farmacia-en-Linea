@@ -30,36 +30,53 @@ const loadTemplate = async () => {
             // Se agrega el encabezado de la página web antes del contenido principal.
             MAIN.insertAdjacentHTML('beforebegin', `
                 <header>
-                    <nav class="navbar fixed-top navbar-expand-lg bg-body-tertiary">
-                        <div class="container">
-                            <a class="navbar-brand" href="index.html"><img src="../../resources/img/dmsystem.png" height="50" alt="Farmacia Central"></a>
-                            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNavAltMarkup" aria-controls="navbarNavAltMarkup" aria-expanded="false" aria-label="Toggle navigation">
-                                <span class="navbar-toggler-icon"></span>
-                            </button>
-                            <div class="collapse navbar-collapse" id="navbarNavAltMarkup">
-                                <div class="navbar-nav ms-auto">
-                                    <a class="nav-link" href="deportes.html"><i class="fa-solid fa-basketball"></i> Deportes</a>
-                                    <a class="nav-link" href="index.html"><i class="fa-solid fa-store"></i> Productos</a>
-                                    <a class="nav-link" href="carrito.html"><i class="fa-solid fa-cart-shopping"></i> Carrito de compras</a>
+    <nav class="navbar fixed-top navbar-expand-lg bg-body-tertiary">
+        <div class="container">
+            <a class="navbar-brand" href="index.html"><img src="../../resources/img/dmsystem.png" height="50" alt="Farmacia Central"></a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNavAltMarkup" aria-controls="navbarNavAltMarkup" aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNavAltMarkup">
+                <div class="navbar-nav ms-auto">
 
-                                    <li class="nav-item dropdown">
-                                        <a class="nav-link dropdown-toggle" href="#" data-bs-toggle="dropdown" aria-expanded="false"><i class="fa-solid fa-user"></i>Cuenta: <b>${DATA.username}</a>
-                                        <ul class="dropdown-menu">
-                                            <li><a class="dropdown-item" href="perfilUsuario.html">Editar perfil</a></li>
-                                            <li><hr class="dropdown-divider"></li>
-                                            <li><a class="dropdown-item" href="historialCompras.html">Historial de compras</a></li>
-                                        </ul>
-                                    </li>
+                    <div class="icon-container">
+                        <a class="nav-link" href="index.html"><i class="fa-solid fa-house"></i></a>
+                        <span>Inicio</span>
+                    </div>
+                    <div class="icon-container">
+                        <a class="nav-link" href="productos.html"><i class="fa-solid fa-notes-medical"></i></a>
+                        <span>Productos</span>
+                    </div>
+                    <div class="icon-container">
+                        <a class="nav-link" href="carrito.html"><i class="fa-solid fa-cart-shopping"></i></a>
+                        <span>Carrito</span>
+                    </div>
+                    <div class="icon-container dropdown">
+                        <a class="nav-link dropdown-toggle" href="#" data-bs-toggle="dropdown" aria-expanded="false">
+                            <i class="fa-solid fa-user"></i>
+                        </a>
+                        <span>Mi cuenta</span>
+                        <ul class="dropdown-menu">
+                            <li><a class="dropdown-item" href="perfilUsuario.html">Editar perfil</a></li>
+                            <li><hr class="dropdown-divider"></li>
+                            <li><a class="dropdown-item" href="historialCompras.html">Historial de compras</a></li>
+                        </ul>
+                    </div>
 
-                                    <a class="nav-link" href="#" onclick="logOut()"> Cerrar sesión <i class="fa-solid fa-arrow-right-to-bracket"></i></a>
+                    <div class="icon-container">
+                        <a class="nav-link" href="#" onclick="logOut()">
+                        <i class="fa-solid fa-arrow-right-to-bracket"></i>
+                        </a>
+                        <span>Cerrar sesión</span>
+                    </div>
 
-                                    
 
-                                </div>
-                            </div>
-                        </div>
-                    </nav>
-                </header>
+                </div>
+            </div>
+        </div>
+    </nav>
+</header>
+
             `);
         } else {
             location.href = 'index.html';
@@ -68,23 +85,48 @@ const loadTemplate = async () => {
         // Se agrega el encabezado de la página web antes del contenido principal.
         MAIN.insertAdjacentHTML('beforebegin', `
             <header>
-                <nav class="navbar fixed-top navbar-expand-lg bg-body-tertiary">
-                    <div class="container"> 
-                        <a class="navbar-brand" href="index.html"><img src="../../resources/img/dmsystem.png" height="50" alt="Farmacia Central"></a>
-                        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNavAltMarkup" aria-controls="navbarNavAltMarkup" aria-expanded="false" aria-label="Toggle navigation">
-                            <span class="navbar-toggler-icon"></span>
-                        </button>
-                        <div class="collapse navbar-collapse" id="navbarNavAltMarkup">
-                            <div class="navbar-nav ms-auto">
-                                <a class="nav-link" href="deportes.html"><i class="fa-solid fa-basketball"></i> Deportes</a>
-                                <a class="nav-link" href="index.html"><i class="fa-solid fa-store"></i> Productos</a>
-                                <a class="nav-link" href="signup.html"><i class="fa-solid fa-user"></i> Crear cuenta</a>
-                                <a class="nav-link" href="login.html"><i class="fa-solid fa-arrow-right-to-bracket"></i> Iniciar sesión</a>
-                            </div>
-                        </div>
+    <nav class="navbar fixed-top navbar-expand-lg bg-body-tertiary">
+        <div class="container">
+            <a class="navbar-brand" href="index.html"><img src="../../resources/img/dmsystem.png" height="50" alt="Farmacia Central"></a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNavAltMarkup" aria-controls="navbarNavAltMarkup" aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNavAltMarkup">
+                <div class="navbar-nav ms-auto">
+                    <div class="icon-container">
+                        <a class="nav-link" href="index.html"><i class="fa-solid fa-house"></i></a>
+                        <span>Inicio</span>
                     </div>
-                </nav>
-            </header>
+                    <div class="icon-container">
+                        <a class="nav-link" href="productos.html"><i class="fa-solid fa-notes-medical"></i></a>
+                        <span>Productos</span>
+                    </div>
+                    <div class="icon-container dropdown">
+                        <a class="nav-link dropdown-toggle" href="#" data-bs-toggle="dropdown" aria-expanded="false">
+                            <i class="fa-solid fa-user"></i>
+                        </a>
+                        <span>Cuenta</span>
+                        <ul class="dropdown-menu">
+                            <li>
+                                <a class="dropdown-item" href="login.html">
+                                    <i class="fa-solid fa-arrow-right-to-bracket me-2"></i> Iniciar sesión
+                                </a>
+                            </li>
+                            <li><hr class="dropdown-divider"></li>
+                            <li>
+                                <a class="dropdown-item" href="signup.html">
+                                    <i class="fa-solid fa-user me-2"></i> Crear cuenta
+                                </a>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </nav>
+</header>
+
+
         `);
     }
     // Se agrega el pie de la página web después del contenido principal.
